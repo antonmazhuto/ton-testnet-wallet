@@ -13,19 +13,21 @@ import {
   History,
   CheckCircle2,
   ShieldCheck,
-  ClipboardCheck
+  ClipboardCheck,
+  RefreshCw
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SendFormProps {
   senderSecretKey: Uint8Array;
+  balance: number;
   onSuccess?: () => void;
   onClose?: () => void;
 }
 
 type Step = 'input' | 'confirm' | 'success';
 
-export default function SendForm({ senderSecretKey, onSuccess, onClose }: SendFormProps) {
+export default function SendForm({ senderSecretKey, balance, onSuccess, onClose }: SendFormProps) {
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [step, setStep] = useState<Step>('input');
@@ -48,6 +50,7 @@ export default function SendForm({ senderSecretKey, onSuccess, onClose }: SendFo
     
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) return 'Please enter a valid positive amount';
+    if (numAmount > balance) return `Insufficient balance (Max: ${balance} TON)`;
     
     return null;
   };

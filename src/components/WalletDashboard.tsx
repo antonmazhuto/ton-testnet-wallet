@@ -155,13 +155,14 @@ export default function WalletDashboard({ activeWallet, onLogout }: WalletDashbo
 
       {/* Overlays */}
       {showSend && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all duration-300">
-          <div className="w-full max-w-md animate-in slide-in-from-bottom duration-300">
-            <SendForm
-              senderSecretKey={activeWallet.secretKey}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+          <div className="w-full max-w-md">
+            <SendForm 
+              senderSecretKey={activeWallet.secretKey} 
+              balance={balance}
               onSuccess={() => {
+                setShowSend(false);
                 refreshBalance();
-                setTimeout(() => setShowSend(false), 2500);
               }}
               onClose={() => setShowSend(false)}
             />

@@ -19,69 +19,148 @@ Built with LLM-assisted development.
 
 ---
 
-## 🧱 Architecture
+## 🚀 Implementation Completeness
 
-- **Frontend**: Next.js (App Router, React, TypeScript)
-- **Blockchain**: tonweb (TON testnet)
-- **Storage**: localStorage (mnemonic, recent addresses)
-- **API**: toncenter public endpoint
+The core wallet functionality is fully implemented:
 
-No backend is used.
+- Wallet creation and import using mnemonic phrases
+- Real-time balance polling via TON API
+- Transaction history with basic search
+- End-to-end send flow with validation and confirmation
+- Receive flow via address copy
+
+Additional safety features:
+- Clipboard tampering detection
+- Warnings for unknown or suspicious addresses
+- Basic address similarity checks
+
+### Limitations
+
+- Mnemonic is stored unencrypted in `localStorage` (acceptable for testnet/demo scope)
+- No backend or secure key management
+- Uses public TON API (possible rate limits)
+- Limited phishing detection heuristics
 
 ---
 
-## 🔐 Security & UX Decisions
+## 📱 UI/UX & Safety
 
-Since this is a frontend-only wallet, several lightweight protections were implemented:
+The application is designed with a mobile-first, wallet-like experience in mind.
 
-### 1. Address Validation
-- Basic format validation before sending
+Key UX decisions:
 
-### 2. Clipboard Protection
-- Detects if pasted address differs from original copied value
-- Warns user before sending
+- **Clear transaction flow**: input → validation → confirmation → result
+- **Prevention of accidental actions**:
+    - explicit confirmation step before sending
+    - disabled actions during async operations
+- **Real-time validation**:
+    - address format
+    - amount constraints (including insufficient balance)
+- **Safety-first UX**:
+    - warnings for unknown or suspicious addresses
+    - detection of similar-looking addresses (anti-spoofing)
+- **Feedback system**:
+    - loading states during network operations
+    - clear success/error notifications after transactions
 
-### 3. New Address Warning
-- Alerts user when sending to an unknown address
+---
 
-### 4. Confirmation Step
-- User must confirm transaction details before sending
+## 🧪 Testing
 
-### 5. Address Similarity Check (basic)
-- Detects addresses that are very similar to previously used ones
-- Warns user about potential spoofing
+Basic automated tests are implemented for critical logic and key UI behaviors.
 
-### 6. UX Warnings Visibility
-- Warnings are visually prominent and require explicit user confirmation before sending funds
+Covered areas:
+
+- **Validation logic**
+    - invalid address format
+    - invalid or excessive amount
+
+- **Business logic**
+    - preventing transactions with insufficient balance
+    - successful transaction updates balance state
+
+- **UI behavior**
+    - disabled actions when input is invalid
+    - loading/processing states during transaction flow
+
+### Tools
+
+- Vitest
+- React Testing Library
+
+Testing approach focuses on high-risk areas rather than full coverage.
 
 ---
 
 ## ⚖️ Trade-offs
 
-- Mnemonic stored in localStorage (not secure, acceptable for testnet demo)
-- No full phishing protection
-- Uses public TON API (rate limits possible)
-- No encryption layer
+Several intentional trade-offs were made to keep the implementation simple and focused:
+
+- **localStorage for mnemonic**
+    - Chosen for simplicity and zero-backend architecture
+    - Not secure, but acceptable for a testnet/demo wallet
+
+- **Client-side only architecture**
+    - Improves privacy and reduces infrastructure complexity
+    - Increases bundle size due to crypto libraries
+
+- **Public TON API (toncenter)**
+    - Allows fast integration without backend
+    - May introduce rate limits and lower reliability under load
+
+- **Limited security layer**
+    - Focus on UX-level protections instead of full cryptographic security
+    - Prioritized clarity and usability over production-grade hardening
+
+---
+
+## 🏗️ Architecture & Stack
+
+### Stack
+
+- Next.js (App Router, React, TypeScript)
+- TonWeb (TON blockchain interaction)
+- Tailwind CSS + Shadcn UI
+- Public TON API (toncenter)
+
+### Structure
+
+The project follows a modular, separation-of-concerns approach:
+
+- `components/` — UI components
+- `hooks/` — business logic (balance, transactions)
+- `lib/` — TON integration and utilities
+
+### Rationale
+
+- **Next.js** — fast setup, good DX, scalable if backend is added later
+- **TonWeb** — stable and widely used TON library
+- **Hooks-based architecture** — keeps UI and logic decoupled
+- **No backend** — reduces complexity and aligns with assignment scope
+
+The architecture is easily extensible to a full-stack solution if needed.
 
 ---
 
 ## 🤖 LLM-Assisted Development
 
-This project was built using LLM tools (Trae IDE + Gemini 3 Flash).
+LLM tools were used as a productivity layer during development.
 
-### Workflow
-- Decomposed tasks into small units
-- Used LLM to generate modules (wallet, transactions, UI)
-- Reviewed and refined outputs manually
-- Implemented additional logic for edge cases and UX
+- Used for scaffolding and generating repetitive code (hooks, UI blocks)
+- Assisted with TON integration patterns and API usage
+- All critical logic (transactions, validation, UX decisions) was reviewed and refined manually
 
-### Example Prompts
-- "Create TON wallet using tonweb with mnemonic generation"
-- "Build React hook for fetching balance with polling"
-- "Implement send transaction form with validation"
-- "Add anti-scam checks for crypto wallet UI"
+The LLM acted as a development assistant, while architectural and security decisions were made explicitly.
 
-The LLM was used as a development agent, while I acted as orchestrator.
+---
+
+## ⏱️ Time Spent
+
+Approx. 6 hours:
+
+- ~2h — TON integration (wallet, transactions)
+- ~3h — UI/UX and safety features
+- ~1h — testing and documentation
 
 ---
 
@@ -98,7 +177,6 @@ Open http://localhost:3000
 
 ## 🚧 Possible Improvements
 - Encrypt mnemonic in storage
-- Add QR code for receive
 - Improve transaction decoding
 - Add address book
 - Better phishing detection heuristics
