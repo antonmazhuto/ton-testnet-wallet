@@ -154,16 +154,6 @@ The LLM acted as a development assistant, while architectural and security decis
 
 ---
 
-## ⏱️ Time Spent
-
-Approx. 6 hours:
-
-- ~2h — TON integration (wallet, transactions)
-- ~3h — UI/UX and safety features
-- ~1h — testing and documentation
-
----
-
 ## 🛠️ Getting Started
 
 ```bash
