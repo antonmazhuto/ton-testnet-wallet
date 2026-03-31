@@ -5,7 +5,7 @@ import { Transaction } from '@/lib/types';
 /**
  * Hook to fetch and manage transaction history for a given address.
  * Includes auto-refresh and searching by address.
- * 
+ *
  * @param address The wallet address to fetch transactions for
  * @param limit The number of transactions to fetch (default: 10)
  * @returns { transactions, filteredTransactions, isLoading, error, refresh, search, searchQuery }
@@ -18,21 +18,30 @@ export function useTransactions(address: string | undefined, limit = 10) {
 
   const fetchTransactions = useCallback(async () => {
     if (!address) return;
-    
+
     try {
       // TonWeb.getTransactions(address, limit, lt, hash, to_lt)
       const rawTxs = await ton.getTransactions(address, limit);
       
+      if (!Array.isArray(rawTxs)) {
+        console.warn('TonWeb returned non-array transactions:', rawTxs);
+        if (rawTxs && typeof rawTxs === 'object' && 'error' in rawTxs) {
+          throw new Error((rawTxs as any).error || 'Failed to fetch transactions');
+        }
+        setTransactions([]);
+        return;
+      }
+
       const parsedTxs: Transaction[] = rawTxs.map((tx: any) => {
         const utime = tx.utime * 1000; // Convert to ms
         const hash = tx.transaction_id.hash;
         const id = `${hash}_${tx.transaction_id.lt}`;
-        
+
         let type: 'receive' | 'send' = 'receive';
         let amount = 0;
         let from = '';
         let to = '';
-        
+
         // Simple heuristic for parsing amount/type from TonWeb result
         if (tx.in_msg && tx.in_msg.source) {
           // Incoming message

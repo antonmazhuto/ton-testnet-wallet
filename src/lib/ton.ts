@@ -76,6 +76,7 @@ export const sendTransaction = async (
 export const isAddressNew = async (address: string): Promise<boolean> => {
   try {
     const txs = await ton.getTransactions(address, 1);
+    if (!Array.isArray(txs)) return false;
     return txs.length === 0;
   } catch (e) {
     console.error('Failed to check address history', e);

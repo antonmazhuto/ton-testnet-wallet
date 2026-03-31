@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { QRCodeCanvas } from 'qrcode.react';
+import { Copy, X, Check } from "lucide-react";
+import { toast } from 'sonner';
+import { cn } from "@/lib/utils";
 
 interface ReceiveProps {
   address: string;
@@ -20,61 +22,63 @@ export default function Receive({ address, onClose }: ReceiveProps) {
   };
 
   return (
-    <div className="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm space-y-6 animate-in fade-in zoom-in duration-300">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-gray-900">Receive TON</h2>
+    <div className="bg-card border border-border rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom duration-300">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl font-semibold text-foreground">Receive</h2>
+          <p className="text-xs text-muted-foreground font-mono uppercase tracking-widest">TON Testnet</p>
+        </div>
         {onClose && (
           <button 
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X size={16} />
           </button>
         )}
       </div>
 
-      <div className="flex flex-col items-center space-y-6">
-        {/* QR Code */}
-        <div className="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+      <div className="flex flex-col items-center gap-6">
+        {/* QR Code Container */}
+        <div className="p-4 bg-white rounded-2xl shadow-inner shadow-black/5">
           <QRCodeCanvas 
             value={address} 
             size={180}
             level="H"
             includeMargin={false}
+            fgColor="#000000"
+            bgColor="#FFFFFF"
           />
         </div>
 
-        <div className="space-y-4 w-full">
-          <div className="text-sm text-gray-500 text-center">
-            Scan or copy the address to receive funds
+        <div className="w-full space-y-4">
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">Scan or copy address to receive funds</p>
           </div>
 
-          <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 break-all text-center font-mono text-xs text-gray-600 leading-relaxed select-all">
-            {address}
+          <div className="relative group">
+            <div className="p-4 bg-muted/50 rounded-2xl border border-border break-all text-center font-mono text-xs text-foreground leading-relaxed select-all cursor-pointer hover:bg-muted transition-colors">
+              {address}
+            </div>
           </div>
 
           <button
             onClick={handleCopy}
-            className={`w-full h-12 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+            className={cn(
+              "w-full h-14 rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg",
               copied 
-                ? 'bg-green-500 text-white' 
-                : 'bg-black text-white hover:bg-gray-800 shadow-lg shadow-black/10'
-            }`}
+                ? "bg-gain text-primary-foreground shadow-gain/20" 
+                : "bg-primary text-primary-foreground hover:opacity-90 shadow-primary/20"
+            )}
           >
             {copied ? (
               <>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+                <Check size={18} />
                 Copied!
               </>
             ) : (
               <>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                </svg>
+                <Copy size={18} />
                 Copy Address
               </>
             )}
@@ -82,8 +86,10 @@ export default function Receive({ address, onClose }: ReceiveProps) {
         </div>
       </div>
 
-      <div className="text-[10px] text-gray-400 text-center uppercase tracking-widest font-medium">
-        TON Testnet Address Only
+      <div className="mt-6 pt-4 border-t border-border/50 text-center">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
+          Only send TON Testnet assets to this address
+        </p>
       </div>
     </div>
   );
